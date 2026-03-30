@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 mt-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card bg-white border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="card-header border-0 pt-5 pb-0 bg-transparent">
+                    <div style="background: #10b981; color: white; width: 100px; height: 100px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: -50px; z-index: 10; position: relative; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);">
+                        <i class="fa-solid fa-check fa-3x"></i>
+                    </div>
+                </div>
+                <div class="card-body p-5 mt-4">
+                    <h2 class="mb-3 fw-bold" style="color: #1e1b4b;">Order Confirmed!</h2>
+                    <p class="fs-5" style="color: #64748b;">Thank you for choosing MKS Premium Crackers.</p>
+                    
+                    <div class="alert bg-light border-0 py-4 mt-4 mb-4 rounded-4 shadow-sm">
+                        <span class="d-block text-muted text-uppercase fw-bold mb-2 text-sm" style="letter-spacing: 1px;">Tracking Number ID</span>
+                        <strong class="fs-3 font-monospace" style="color: #db2777;">{{ order_id }}</strong>
+                    </div>
+                    
+                    <p class="mt-4 mb-5" style="color: #475569; line-height: 1.6;">Our Sivakasi logistics team is packaging your fireworks right now. You will receive an SMS via your registered phone number once dispatched.</p>
+                    
+                    <a href="{{ url_for('home') }}" class="btn btn-custom px-5 py-3 rounded-pill shadow-sm"><i class="fa-solid fa-house me-2"></i> Return to Homepage</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

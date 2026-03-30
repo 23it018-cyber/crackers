@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero mb-5">
+    <div class="hero-content">
+        <h5 class="text-warning fw-bold mb-3" style="letter-spacing: 3px;">THE PREMIUM CRACKER COLLECTION</h5>
+        <h1>Ignite The Night <br> With Excellence</h1>
+        <p class="lead text-light mb-4 fw-light">Direct wholesale purchasing for the brightest, safest, and most magnificent Sivakasi fireworks.</p>
+        <a href="{{ url_for('shop') }}" class="btn btn-custom btn-lg px-4 px-md-5">Explore Collection <i class="fa-solid fa-arrow-right ms-2"></i></a>
+    </div>
+</div>
+
+<div class="container mb-5 pb-4">
+    <div class="text-center mb-4 mb-md-5">
+        <h2 class="category-title">Featured Highlights</h2>
+        <p class="text-muted fs-6 fs-md-5">Premium sky shots and exclusive items handpicked for you.</p>
+    </div>
+
+    <div class="row g-3 g-md-4">
+        {% for item in offers %}
+        <div class="col-6 col-md-4">
+            <div class="cracker-card">
+                <div class="position-relative overflow-hidden">
+                    <img src="{{ item.Image }}" alt="{{ item.Name }}" class="cracker-img" loading="lazy">
+                    <div class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-warning text-dark fw-bold rounded-pill shadow" style="font-size:0.7rem;">PREMIUM</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title fw-bold">{{ item.Name }}</h3>
+                    <p class="text-muted small mb-0">{{ item.Category }}</p>
+                    <div class="price">₹{{ item.Price }}</div>
+                    <button class="btn btn-outline-warning w-100 fw-bold rounded text-uppercase mt-2 py-2" onclick="addToCart({{ item.ID }})">
+                        <i class="fa-solid fa-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container text-center mb-5 mt-4">
+    <div class="row g-3 g-md-4">
+        <div class="col-12 col-md-4">
+            <div class="feature-box h-100">
+                <i class="fa-solid fa-shield-halved feature-icon"></i>
+                <h4 class="fw-bold">100% Quality Assurance</h4>
+                <p class="text-muted mb-0">Rigorous testing ensures safety and spectacular performance.</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="feature-box h-100">
+                <i class="fa-solid fa-tags feature-icon"></i>
+                <h4 class="fw-bold">Direct Wholesale Prices</h4>
+                <p class="text-muted mb-0">Skip the middleman. Genuine Sivakasi rates.</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="feature-box h-100">
+                <i class="fa-solid fa-truck-fast feature-icon"></i>
+                <h4 class="fw-bold">Rapid Pan-India Delivery</h4>
+                <p class="text-muted mb-0">Secure packing and lightning fast delivery partners.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card bg-white border-0 shadow-sm" style="border-radius: 16px;">
+                <div class="card-header border-0 text-center py-4" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); border-radius: 16px 16px 0 0;">
+                    <h3 class="mb-0 text-white fw-bold"><i class="fa-solid fa-user"></i> Login to MKS</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center text-muted mb-4 small fw-semibold">
+                        Sign in as a Customer or Platform Admin
+                    </div>
+                
+                    <form action="{{ url_for('login') }}" method="POST">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--text-color);">Username</label>
+                            <input type="text" name="username" class="form-control bg-light" placeholder="Customer or 'admin'" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--text-color);">Password</label>
+                            <input type="password" name="password" class="form-control bg-light" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-custom w-100 py-3 shadow-sm rounded-pill mt-3">Secure Login <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                    </form>
+                    
+                    <div class="text-center mt-4 border-top pt-4">
+                        <p class="text-muted mb-0">Don't have a customer account?</p>
+                        <a href="{{ url_for('register') }}" class="fw-bold fs-5 text-decoration-none" style="color: #db2777;">Register here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

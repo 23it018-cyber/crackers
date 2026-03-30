@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center mb-4 fw-bold" style="color: #be185d;"><i class="fa-solid fa-wallet"></i> Secure Payment Sandbox</h2>
+            
+            <div class="card bg-white border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-5">
+                        <p class="text-muted mb-1 fw-bold text-uppercase tracking-wider">Amount to Pay</p>
+                        <h1 class="display-4 fw-bold" style="color: #8b5cf6;">₹{{ total }}</h1>
+                    </div>
+                    
+                    <form action="{{ url_for('payment') }}" method="POST" id="payment-form">
+                        
+                        <div class="mb-4 rounded p-3 text-center" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                            <i class="fa-brands fa-google-pay fa-3x mx-3" style="color: #5f6368;"></i>
+                            <i class="fa-brands fa-cc-visa fa-3x mx-3" style="color: #1a1f71;"></i>
+                            <i class="fa-brands fa-cc-mastercard fa-3x mx-3" style="color: #eb001b;"></i>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--text-color);">Demo Card Number (Any 16 Digits)</label>
+                            <input type="text" class="form-control bg-light text-center fs-5 py-2 fw-semibold" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required style="letter-spacing: 2px;">
+                        </div>
+                        
+                        <div class="row mb-5">
+                            <div class="col-6">
+                                <label class="form-label fw-bold" style="color: var(--text-color);">Expiry Date</label>
+                                <input type="text" class="form-control bg-light text-center fw-semibold" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold" style="color: var(--text-color);">Security Code (CVV)</label>
+                                <input type="password" class="form-control bg-light text-center fw-semibold" placeholder="•••" maxlength="3" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-custom w-100 py-3 fs-5 rounded-pill shadow-lg" onclick="this.innerHTML='<i class=\'fa-solid fa-spinner fa-spin\'></i> Processing Secure Payment...';">Pay Securely ₹{{ total }}</button>
+                    </form>
+                    
+                    <div class="text-center mt-4 text-muted small fw-semibold">
+                        <i class="fa-solid fa-lock text-success me-1"></i> 256-bit SSL Encrypted Sandbox Payment Gateway
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

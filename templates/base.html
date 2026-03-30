@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="MKS Premium Crackers – Direct wholesale Sivakasi fireworks shop. Best prices, fast delivery across India.">
+    <title>MKS Premium Crackers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="fa-solid fa-crown" style="color:#db2777;"></i> MKS Crackers
+            </a>
+
+            <!-- Cart badge visible on mobile beside toggler -->
+            <a class="btn btn-outline-warning rounded-pill px-3 fw-bold d-lg-none me-2" href="{{ url_for('cart') }}" style="border-width:2px; font-size:0.85rem;">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cart-badge-mobile">
+                    {% set total_qty = 0 %}
+                    {% if session.get('cart') %}
+                        {% for item in session['cart'].values() %}
+                            {% set total_qty = total_qty + item.quantity %}
+                        {% endfor %}
+                    {% endif %}
+                    {{ total_qty }}
+                </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('shop') }}">Collection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                    </li>
+
+                    {% if session.get('user') %}
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle fw-bold" href="#" id="userDropdown"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                           style="color:#db2777 !important;">
+                            <i class="fa-solid fa-user"></i> {{ session['user'] }}
+                        </a>
+                        <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-sign-out-alt me-1"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link" href="{{ url_for('login') }}"><i class="fa-solid fa-user-lock me-1"></i> Login / Register</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Cart button – desktop only -->
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0 d-none d-lg-block">
+                        <a class="btn btn-outline-warning rounded-pill px-4 fw-bold" href="{{ url_for('cart') }}" style="border-width:2px;">
+                            <i class="fa-solid fa-cart-shopping"></i> Cart
+                            <span class="cart-badge" id="cart-badge">
+                                {% set total_qty = 0 %}
+                                {% if session.get('cart') %}
+                                    {% for item in session['cart'].values() %}
+                                        {% set total_qty = total_qty + item.quantity %}
+                                    {% endfor %}
+                                {% endif %}
+                                {{ total_qty }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3 mt-md-4">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible bg-white text-dark border-{{ category }} fade show shadow-sm" role="alert">
+                    <strong style="color:#be185d;">{{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <div class="container">
+            <h4 class="mb-2 fw-bold">MKS PREMIUM CRACKERS</h4>
+            <p class="mb-1"><small>Directly from Sivakasi to your doorstep.</small></p>
+            <p class="mt-3 mb-0" style="color:#94a3b8;">&copy; 2026 MKS Crackers. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function addToCart(productId) {
+            fetch('/api/add-to-cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update both desktop and mobile cart badges
+                    const badges = [
+                        document.getElementById('cart-badge'),
+                        document.getElementById('cart-badge-mobile')
+                    ];
+                    badges.forEach(b => { if (b) b.innerText = data.cart_count; });
+
+                    Swal.fire({
+                        title: 'Added!',
+                        text: data.message,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        background: '#ffffff',
+                        color: '#1e1b4b',
+                        iconColor: '#db2777',
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            })
+            .catch(err => console.error('Error adding to cart:', err));
+        }
+    </script>
+</body>
+</html>

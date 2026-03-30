@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h2 class="mb-4 pb-2 fw-bold text-center" style="color: #6d28d9;"><i class="fa-solid fa-address-card" style="color: #db2777;"></i> Delivery Information</h2>
+            
+            <div class="card bg-white border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header border-0" style="height: 6px; background: linear-gradient(90deg, #db2777, #8b5cf6);"></div>
+                <div class="card-body p-4 p-md-5">
+                    <form action="{{ url_for('checkout') }}" method="POST">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--text-color);">Full Name</label>
+                            <input type="text" name="name" class="form-control bg-light" value="{{ session['user'] if session.get('user') else '' }}" required placeholder="Enter your verifiable full name">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--text-color);">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control bg-light" required placeholder="10-digit mobile number">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--text-color);">Complete Delivery Address</label>
+                            <textarea name="address" class="form-control bg-light" rows="3" required placeholder="Door No, Street Name, City, State, Pincode"></textarea>
+                        </div>
+
+                        <div class="row mb-5">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label fw-bold" style="color: #be185d;">Manual Delivery Date</label>
+                                <input type="date" name="delivery_date" class="form-control bg-light border-danger shadow-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold" style="color: #6d28d9;">Recommended Delivery</label>
+                                <input type="date" name="recommended_date" class="form-control bg-light" value="{{ rec_date }}" readonly>
+                                <small class="form-text text-muted">Auto-calculated (3 days from today)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info border-0 rounded-3 mb-5 shadow-sm" style="background: rgba(139, 92, 246, 0.1); color: #4c1d95;">
+                            <i class="fa-solid fa-circle-info me-2 text-primary"></i> Your total order value verified at <strong class="fs-5 ms-1" style="color: #db2777;">₹{{ total }}</strong>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a href="{{ url_for('cart') }}" class="btn fw-bold" style="color: #64748b; text-decoration: underline;">Back to Cart</a>
+                            <button type="submit" class="btn btn-custom px-5 py-3 rounded-pill shadow">Proceed to Payment <i class="fa-solid fa-credit-card ms-2"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+# Created by Antigravity
+
+# Virtual Environment
+.venv/
+Scripts/
+Include/
+Lib/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Database / Secrets if any
+*.sqlite3
+.env
+*.db
