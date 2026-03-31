@@ -13,10 +13,10 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container py-1">
             <a class="navbar-brand" href="{{ url_for('home') }}">
-                <i class="fa-solid fa-crown" style="color:#db2777;"></i> MKS Crackers
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="MKS Premium Crackers Logo">
             </a>
 
             <!-- Cart badge visible on mobile beside toggler -->
@@ -45,6 +45,14 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('shop') }}">Collection</a>
+                    </li>
+                    {% if session.get('user') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('prev_orders') }}">Previous Orders</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('track_order') }}">Track Order</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
@@ -135,10 +143,16 @@
                         timer: 1500,
                         showConfirmButton: false,
                         background: '#ffffff',
-                        color: '#1e1b4b',
-                        iconColor: '#db2777',
+                        color: '#0f172a',
+                        iconColor: '#2563eb',
                         toast: true,
-                        position: 'top-end'
+                        position: 'top-end',
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
                     });
                 }
             })

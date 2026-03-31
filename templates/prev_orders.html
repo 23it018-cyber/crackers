@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="d-flex align-items-center mb-4 pb-2">
+        <h2 class="fw-bold mb-0 text-main" style="font-size: clamp(1.4rem, 4vw, 2rem);">
+            My Order History
+        </h2>
+        <span class="badge bg-secondary ms-3 rounded-pill px-3 py-2" style="font-size: 0.9rem;">
+            {{ orders|length }} Total Order{% if orders|length != 1 %}s{% endif %}
+        </span>
+    </div>
+
+    {% if not orders %}
+    <div class="text-center py-5 bg-white shadow-sm" style="border-radius: 12px; border: 1px solid var(--border-light);">
+        <i class="fa-solid fa-clock-rotate-left fa-3x mb-3 text-muted" style="opacity: 0.3;"></i>
+        <h3 class="fw-semibold text-main">No orders found</h3>
+        <p class="text-muted mb-4">You haven't placed any orders with us yet.</p>
+        <a href="{{ url_for('shop') }}" class="btn btn-custom px-5">Start Shopping</a>
+    </div>
+    {% else %}
+    <div class="card bg-white border-0 shadow-sm overflow-hidden" style="border-radius: 12px; border: 1px solid var(--border-light) !important;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color:#f8fafc;">
+                    <tr>
+                        <th class="py-3 px-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px;">Order Details</th>
+                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px;">Date & Time</th>
+                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px;">Tracking ID</th>
+                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px;">Amount</th>
+                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px;">Status</th>
+                        <th class="py-3 px-4 text-center text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px;">Quick Track</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders[::-1] %}
+                    <tr>
+                        <td class="px-4 py-3">
+                            <span class="text-main fw-bold">{{ order['Order ID'] }}</span>
+                        </td>
+                        <td class="py-3">
+                            <div class="text-main fw-medium">{{ order['Date'] }}</div>
+                            <div class="text-muted small">{{ order['Time'] }}</div>
+                        </td>
+                        <td class="py-3">
+                            <code class="text-primary fw-bold" style="background:#f0f7ff; padding: 2px 6px; border-radius: 4px;">{{ order['Order ID'] }}</code>
+                        </td>
+                        <td class="py-3 fw-bold text-main">₹{{ order['Total Amount'] }}</td>
+                        <td class="py-3">
+                            <span class="badge rounded-pill px-3 py-2 {% if order['Status'] == 'Delivered' %}bg-success{% elif order['Status'] == 'Cancelled' %}bg-danger{% else %}bg-primary{% endif %}" style="font-size: 0.75rem;">
+                                {{ order['Status'] }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <form action="{{ url_for('track_order') }}" method="POST" class="d-inline">
+                                <input type="hidden" name="order_id" value="{{ order['Order ID'] }}">
+                                <button type="submit" class="btn btn-sm btn-outline-custom">
+                                    <i class="fa-solid fa-magnifying-glass me-1"></i> Track
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

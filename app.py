@@ -311,17 +311,49 @@ def cart():
             if pid_str in session['cart'] and qty > 0:
                 session['cart'][pid_str]['quantity'] = qty
                 session.modified = True
+        elif action == 'apply_discount':
+            code = request.form.get('discount_code', '').strip()
+            percents = {
+                '000000000000': 10,
+                '111111111111111': 20,
+                '333333333333333': 30,
+                '444444444444444': 40,
+                '555555555555555': 50
+            }
+            if code in percents:
+                session['discount'] = percents[code]
+                session['discount_code'] = code
+                flash(f"Coupon applied: {percents[code]}% off!", "success")
+            elif code.isdigit() and 0 < int(code) < 100:
+                session['discount'] = int(code)
+                session['discount_code'] = code + "% off"
+                flash(f"Discount applied: {code}% off!", "success")
+            else:
+                session['discount'] = 0
+                session.pop('discount_code', None)
+                flash("Invalid or missing coupon code.", "danger")
+        elif action == 'remove_discount':
+            session['discount'] = 0
+            session.pop('discount_code', None)
+            flash("Coupon removed.", "info")
         return redirect(url_for('cart'))
 
-    total = sum(item['price'] * item['quantity'] for item in session['cart'].values())
-    return render_template('cart.html', cart=session['cart'], total=total)
+    base_total = sum(item['price'] * item['quantity'] for item in session['cart'].values())
+    discount_pct = session.get('discount', 0)
+    discount_amount = base_total * (discount_pct / 100.0)
+    total = base_total - discount_amount
+    discount_code = session.get('discount_code')
+
+    return render_template('cart.html', cart=session['cart'], base_total=base_total, discount_pct=discount_pct, discount_amount=discount_amount, total=total, discount_code=discount_code)
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     if 'cart' not in session or not session['cart']:
         return redirect(url_for('shop'))
 
-    total = sum(item['price'] * item['quantity'] for item in session['cart'].values())
+    base_total = sum(item['price'] * item['quantity'] for item in session['cart'].values())
+    discount_pct = session.get('discount', 0)
+    total = base_total - (base_total * (discount_pct / 100.0))
 
     if request.method == 'POST':
         session['checkout_info'] = {
@@ -372,6 +404,32 @@ def payment():
 @app.route('/order-success/<order_id>')
 def order_success(order_id):
     return render_template('order_success.html', order_id=order_id)
+
+@app.route('/track-order', methods=['GET', 'POST'])
+def track_order():
+    order = None
+    if request.method == 'POST':
+        order_id = request.form.get('order_id').strip()
+        orders = get_orders()
+        order = next((o for o in orders if o.get('Order ID') == order_id), None)
+        if not order:
+            flash("Order ID not found.", "danger")
+    return render_template('track_order.html', order=order)
+
+@app.route('/prev-orders')
+def prev_orders():
+    if 'user' not in session:
+        flash("Please login to view your previous orders.", "warning")
+        return redirect(url_for('login'))
+    
+    username = session['user']
+    all_orders = get_orders()
+    # Filter orders by current logged in user
+    # If the database doesn't have a specific 'Username' column, we match by 'Customer Name'
+    # but for a real app we'd use a foreign key. Here we'll check if the schema handles it or match by name.
+    user_orders = [o for o in all_orders if o.get('Customer Name') == username]
+    
+    return render_template('prev_orders.html', orders=user_orders)
 
 @app.route('/contact')
 def contact():
@@ -461,6 +519,26 @@ def delete_product(pid):
         flash("Product deleted successfully", "success")
     except Exception as e:
         flash(f"Error deleting product: {e}", "danger")
+        
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/orders/update-status', methods=['POST'])
+def update_order_status():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+        
+    order_id = request.form.get('order_id')
+    new_status = request.form.get('status')
+    
+    try:
+        conn = get_db()
+        c = conn.cursor()
+        c.execute("UPDATE orders SET Status = %s WHERE `Order ID` = %s", (new_status, order_id))
+        conn.commit()
+        conn.close()
+        flash(f"Order {order_id} updated to {new_status}", "success")
+    except Exception as e:
+        flash(f"Error updating order status: {e}", "danger")
         
     return redirect(url_for('admin_dashboard'))
 

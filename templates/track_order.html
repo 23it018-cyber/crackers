@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 12px; border: 1px solid var(--border-light) !important;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-location-dot fa-3x text-primary mb-3"></i>
+                        <h2 class="fw-bold text-main">Track Your Order</h2>
+                        <p class="text-muted">Enter your Order ID to see the full shipment details.</p>
+                    </div>
+
+                    <form action="{{ url_for('track_order') }}" method="POST" class="mb-4" id="trackForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="font-size: 0.9rem;">Order ID / Tracking ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-light text-muted">
+                                    <i class="fa-solid fa-hashtag"></i>
+                                </span>
+                                <input type="text" name="order_id" class="form-control bg-light border-light" placeholder="e.g. ORD2026..." required style="padding: 12px;" value="{{ order['Order ID'] if order else '' }}">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-custom w-100 py-3 fw-bold">
+                            View Shipment Details
+                        </button>
+                    </form>
+
+                    {% if order %}
+                    <!-- The modal-style pop-up effect for tracking results -->
+                    <div id="trackingResult" class="animate-fade-in-up mt-4 p-4 rounded bg-white" style="border: 1px solid var(--border-light); box-shadow: var(--shadow-md);">
+                        <div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3">
+                            <div>
+                                <h4 class="fw-bold text-main mb-1">Shipment Overview</h4>
+                                <p class="text-muted small mb-0">ID: <span class="text-primary fw-bold">{{ order['Order ID'] }}</span></p>
+                            </div>
+                            <span class="badge px-3 py-2 rounded-pill {% if order['Status'] == 'Delivered' %}bg-success{% elif order['Status'] == 'Cancelled' %}bg-danger{% else %}bg-primary{% endif %}" style="font-size: 0.8rem;">
+                                {{ order['Status'] }}
+                            </span>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-sm-6">
+                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block" style="letter-spacing: 0.5px;">Customer Name</label>
+                                <p class="text-main fw-semibold mb-0" style="font-size: 1.1rem;">{{ order['Customer Name'] }}</p>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block" style="letter-spacing: 0.5px;">Delivery Date</label>
+                                <p class="text-danger fw-bold mb-0" style="font-size: 1.1rem;">{{ order.get('Delivery Date', 'Scheduled soon') }}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block" style="letter-spacing: 0.5px;">Phone Number</label>
+                                <p class="text-main fw-medium mb-0">{{ order['Phone'] }}</p>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block" style="letter-spacing: 0.5px;">Amount Paid</label>
+                                <p class="text-main fw-bold mb-0" style="font-size: 1.2rem;">₹{{ order['Total Amount'] }}</p>
+                            </div>
+                            <div class="col-12">
+                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block" style="letter-spacing: 0.5px;">Shipping Address</label>
+                                <div class="p-3 rounded bg-light border-light border">
+                                    <p class="text-main small mb-0 fw-medium" style="line-height: 1.6;">{{ order['Address'] }}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block" style="letter-spacing: 0.5px;">Items Ordered</label>
+                                <p class="text-main small mb-0 fw-medium p-2 border-start border-primary border-4 bg-light">{{ order['Items'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

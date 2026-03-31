@@ -125,7 +125,20 @@
                                 <td class="excel-cell fw-bold text-danger">{{ order.get('Delivery Date', 'N/A') }}</td>
                                 <td class="excel-cell"><small>{{ order['Items'] }}</small></td>
                                 <td class="excel-cell fw-bold" style="color: #db2777;">₹{{ order['Total Amount'] }}</td>
-                                <td><span class="badge bg-success shadow-sm">{{ order['Status'] }}</span></td>
+                                <td>
+                                    <form action="{{ url_for('update_order_status') }}" method="POST" class="d-flex align-items-center gap-2">
+                                        <input type="hidden" name="order_id" value="{{ order['Order ID'] }}">
+                                        <select name="status" class="form-select form-select-sm p-1 fs-6 border-light shadow-sm" style="width: auto; height: 32px;">
+                                            <option value="Paid & Processing" {% if order['Status'] == 'Paid & Processing' %}selected{% endif %}>Processing</option>
+                                            <option value="Out for Delivery" {% if order['Status'] == 'Out for Delivery' %}selected{% endif %}>Out Delivery</option>
+                                            <option value="Delivered" {% if order['Status'] == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                            <option value="Cancelled" {% if order['Status'] == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-custom p-1 px-2" style="height: 32px;" title="Update Status">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         {% endif %}
